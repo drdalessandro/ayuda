@@ -12,7 +12,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { useThemeColor } from '@/hooks/use-theme-color';
-import { Spacing } from '@/constants/theme';
+import { EpaColors, Spacing } from '@/constants/theme';
 
 export default function ConsentScreen() {
   const buttonBackground = useThemeColor({}, 'buttonBackground');
@@ -23,12 +23,12 @@ export default function ConsentScreen() {
 
   const handleAgree = async () => {
     if (!givenName.trim() || !familyName.trim()) {
-      Alert.alert('Required Fields', 'Please enter your first and last name.');
+      Alert.alert('Campos requeridos', 'Por favor ingresá tu nombre y apellido.');
       return;
     }
 
     if (!agreed) {
-      Alert.alert('Consent Required', 'Please check the box to agree to the terms.');
+      Alert.alert('Consentimiento requerido', 'Por favor marcá la casilla para aceptar los términos.');
       return;
     }
 
@@ -37,7 +37,7 @@ export default function ConsentScreen() {
       await ConsentService.saveConsent(consentData);
       router.push('/(onboarding)/get-started');
     } catch {
-      Alert.alert('Error', 'Failed to save consent. Please try again.');
+      Alert.alert('Error', 'No se pudo guardar el consentimiento. Por favor intentá nuevamente.');
     }
   };
 
@@ -45,63 +45,61 @@ export default function ConsentScreen() {
     <ThemedView style={styles.container}>
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
+          <View style={[styles.headerBadge, { backgroundColor: EpaColors.rosePetal }]}>
+            <IconSymbol name="lock.shield.fill" size={20} color={EpaColors.goRed} />
+            <ThemedText style={[styles.headerBadgeText, { color: EpaColors.goRed }]}>
+              Consentimiento Informado
+            </ThemedText>
+          </View>
           <ThemedText type="title" style={styles.title}>
-            Informed Consent
+            Tus datos, tu control
           </ThemedText>
           <ThemedText style={styles.subtitle}>
-            Please review the following information and provide your consent
+            Antes de comenzar, necesitamos tu consentimiento para procesar tus datos de salud
           </ThemedText>
         </View>
 
         <View style={styles.consentDocument}>
           <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-            Study Overview
+            ¿Para qué usamos tus datos?
           </ThemedText>
           <ThemedText style={styles.paragraph}>
-            You are being asked to participate in a wellness study using the SpeziVibe application.
-            This study aims to help you track and improve your overall well-being through daily
-            activities and reflections.
+            EPA Bienestar procesa tus respuestas para calcular tu score cardiovascular LE8,
+            generar tu Plan Bienestar 100 Días® y hacer seguimiento de tu progreso.
+            Tus datos se almacenan en forma segura en nuestro servidor FHIR R4 (Medplum).
           </ThemedText>
 
           <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-            What You&apos;ll Do
+            ¿Qué vas a hacer en la app?
           </ThemedText>
           <ThemedText style={styles.paragraph}>
-            • Complete daily wellness check-ins and mood assessments{'\n'}
-            • Track your exercise and mindfulness activities{'\n'}
-            • Reflect on your progress weekly{'\n'}
-            • Receive personalized insights based on your data
+            {'• Completar la Evaluación Inicial Life\'s Essential 8 (5 minutos)\n'}
+            {'• Seguir el Plan Bienestar 100 Días® (una micro-acción por día)\n'}
+            {'• Hacer check-ins semanales de seguimiento\n'}
+            {'• Acceder a tu historia clínica digital en cualquier momento'}
           </ThemedText>
 
           <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-            Your Privacy
+            Tu privacidad
           </ThemedText>
           <ThemedText style={styles.paragraph}>
-            Your data will be stored securely on your device. We do not share your personal
-            information with third parties. You can withdraw from the study at any time by
-            uninstalling the application.
+            Tus datos nunca se venden ni se comparten con terceros sin tu autorización expresa.
+            Podés solicitar la eliminación de tu cuenta y todos tus datos en cualquier momento.
+            Cumplimos con la Ley 25.326 de Protección de Datos Personales (Argentina) y HIPAA (EE.UU.).
           </ThemedText>
 
           <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-            Time Commitment
+            Responsable del tratamiento
           </ThemedText>
           <ThemedText style={styles.paragraph}>
-            Participation requires approximately 10-15 minutes per day for completing scheduled
-            tasks and activities.
-          </ThemedText>
-
-          <ThemedText type="defaultSemiBold" style={styles.sectionTitle}>
-            Contact Information
-          </ThemedText>
-          <ThemedText style={styles.paragraph}>
-            If you have questions about this study, please contact the research team through the
-            Contacts section of the app.
+            Dr. Alejandro Sergio D'Alessandro — EPA Bienestar.{'\n'}
+            Ante dudas o consultas, contactanos desde la sección Contactos de la app.
           </ThemedText>
         </View>
 
         <View style={styles.signatureSection}>
           <ThemedText type="defaultSemiBold" style={styles.signatureTitle}>
-            Your Information
+            Tus datos
           </ThemedText>
 
           <NameInputSection
@@ -114,7 +112,7 @@ export default function ConsentScreen() {
           <ConsentCheckbox
             checked={agreed}
             onToggle={() => setAgreed(!agreed)}
-            label="I have read and agree to the terms described above. I consent to participate in this wellness study."
+            label="Leí y acepto los términos descriptos. Consiento el procesamiento de mis datos de salud por parte de EPA Bienestar para los fines indicados."
             colors={{ primaryLight: buttonBackground, primaryDark: buttonBackground, inactiveLight: '#ccc', inactiveDark: '#666' }}
             renderCheckmark={(color) => (
               <IconSymbol name="checkmark" size={16} color={color} />
@@ -122,10 +120,10 @@ export default function ConsentScreen() {
           />
 
           <ThemedText style={styles.dateText}>
-            Date: {new Date().toLocaleDateString('en-US', {
+            {'Fecha: '}{new Date().toLocaleDateString('es-AR', {
               year: 'numeric',
               month: 'long',
-              day: 'numeric'
+              day: 'numeric',
             })}
           </ThemedText>
         </View>
@@ -133,10 +131,10 @@ export default function ConsentScreen() {
 
       <View style={styles.footer}>
         <OnboardingButton
-          label="Agree & Continue"
+          label="Acepto y continúo"
           onPress={handleAgree}
           style={{ backgroundColor: buttonBackground }}
-          labelStyle={{ color: buttonText }}
+          labelStyle={{ color: buttonText, fontWeight: '700' }}
         />
       </View>
     </ThemedView>
@@ -155,6 +153,17 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.screenTop,
     paddingBottom: Spacing.screenHorizontal,
   },
+  headerBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 20,
+    marginBottom: 12,
+  },
+  headerBadgeText: { fontSize: 13, fontWeight: '600' },
   header: {
     marginBottom: 24,
   },

@@ -23,25 +23,25 @@ export default function GetStartedScreen() {
 
         <View style={styles.textContainer}>
           <ThemedText type="title" style={styles.title}>
-            You&apos;re All Set!
+            ¡Todo listo!
           </ThemedText>
           <ThemedText style={styles.description}>
-            Ready to begin your wellness journey? Let&apos;s make every day count together.
+            Creá tu cuenta y en minutos vas a tener tu score cardiovascular LE8 personalizado.
           </ThemedText>
         </View>
 
         <View style={styles.benefitsContainer}>
           <View style={styles.benefitItem}>
             <IconSymbol name="checkmark.circle.fill" size={20} color={buttonBackground} />
-            <ThemedText style={styles.benefitText}>Track your daily progress</ThemedText>
+            <ThemedText style={styles.benefitText}>Evaluación Inicial LE8 lista para completar</ThemedText>
           </View>
           <View style={styles.benefitItem}>
             <IconSymbol name="checkmark.circle.fill" size={20} color={buttonBackground} />
-            <ThemedText style={styles.benefitText}>Get personalized insights</ThemedText>
+            <ThemedText style={styles.benefitText}>Tu Plan Bienestar 100 Días® te espera</ThemedText>
           </View>
           <View style={styles.benefitItem}>
             <IconSymbol name="checkmark.circle.fill" size={20} color={buttonBackground} />
-            <ThemedText style={styles.benefitText}>Achieve your wellness goals</ThemedText>
+            <ThemedText style={styles.benefitText}>Historia clínica digital segura en FHIR R4</ThemedText>
           </View>
         </View>
       </View>
@@ -56,7 +56,7 @@ export default function GetStartedScreen() {
           accessibilityRole="button"
           accessibilityLabel="Get started with registration">
           <ThemedText style={[styles.buttonText, { color: buttonText }]}>
-            Get Started
+            Crear mi cuenta
           </ThemedText>
         </Pressable>
       </View>

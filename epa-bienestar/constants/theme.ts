@@ -5,44 +5,50 @@
 
 import { Platform } from 'react-native';
 
-// Stanford Cardinal Red
-const tintColorLight = '#8C1515';
-const tintColorDark = '#fff';
+// EPA Bienestar — Go Red For Women (AHA) con escala cálida
+const tintColorLight = '#C8102E';
+const tintColorDark = '#FF6B6B';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#1A1A2E',
+    background: '#FFFAF9',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    icon: '#6B5B6E',
+    tabIconDefault: '#9E8FA0',
     tabIconSelected: tintColorLight,
-    border: '#ddd',
-    buttonBackground: '#8C1515',
-    buttonText: '#fff',
+    border: '#E8D5D8',
+    buttonBackground: '#C8102E',
+    buttonText: '#FFFFFF',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#F5EEF0',
+    background: '#1A0F12',
     tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    icon: '#C4A8B0',
+    tabIconDefault: '#8A707A',
     tabIconSelected: tintColorDark,
-    border: '#444',
-    buttonBackground: '#8C1515',
-    buttonText: '#fff',
+    border: '#3D2530',
+    buttonBackground: '#C8102E',
+    buttonText: '#FFFFFF',
   },
 };
 
-// Stanford color palette
-export const StanfordColors = {
-  cardinal: '#8C1515',
-  cardinalLight: '#B83A4B',
-  cardinalDark: '#6B0F0F',
-  white: '#FFFFFF',
-  black: '#2E2D29',
-  coolGrey: '#4D4F53',
-  beige: '#F5E6D3',
+// EPA Bienestar — Go Red For Women color palette
+export const EpaColors = {
+  goRed: '#C8102E',       // AHA Go Red For Women
+  goRedDeep: '#8B0000',   // Rojo profundo
+  goRedLight: '#FF6B6B',  // Rojo claro / dark mode
+  rosePetal: '#FFF0F2',   // Fondo tarjetas suave
+  plum: '#8B2252',        // Acento violáceo
+  plumLight: '#C97BA0',   // Plum suave
+  warmWhite: '#FFFAF9',   // Fondo principal
+  warmGrey: '#6B5B6E',    // Texto secundario
+  warmBlack: '#1A1A2E',   // Texto principal
+  // Semáforo LE8
+  optimal: '#2E7D32',
+  intermediate: '#F57C00',
+  inadequate: '#C8102E',
 };
 
 /**

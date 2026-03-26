@@ -18,6 +18,8 @@ import { SPEZIVIBE_TASK_ID_SYSTEM } from '@/lib/constants';
 const logger = createLogger('Questionnaire');
 const RESPONSES_KEY = '@questionnaire_responses';
 const RESPONSES_BACKFILL_KEY = '@questionnaire_responses_backfill_done';
+const LE8_LATEST_RESPONSE_KEY = '@le8_latest_response';
+const LE8_QUESTIONNAIRE_ID = 'le8-menopausia-v1';
 
 export default function QuestionnaireScreen() {
   const { id, taskId, eventId } = useLocalSearchParams<{ id: string; taskId?: string; eventId?: string }>();
@@ -129,6 +131,13 @@ export default function QuestionnaireScreen() {
           if (backend) {
             // Cast to unknown first to satisfy TypeScript - the backend handles the actual FHIR type
             await backend.saveQuestionnaireResponse(response as unknown as { id?: string });
+          }
+
+          // LE8 evaluation: store separately and navigate to results screen
+          if (id === LE8_QUESTIONNAIRE_ID) {
+            await AsyncStorage.setItem(LE8_LATEST_RESPONSE_KEY, JSON.stringify(response));
+            router.replace('/le8-resultado');
+            return;
           }
 
           Alert.alert('Success', 'Your responses have been saved', [

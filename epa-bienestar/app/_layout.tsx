@@ -149,6 +149,7 @@ function RootLayoutNav() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="(account)" />
       <Stack.Screen name="questionnaire" options={{ presentation: 'modal' }} />
+      <Stack.Screen name="le8-resultado" options={{ presentation: 'card', headerShown: false }} />
       <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal', headerShown: true }} />
     </Stack>
   );

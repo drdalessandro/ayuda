@@ -1,4 +1,7 @@
 import { Questionnaire, QuestionnaireBuilder } from '@spezivibe/questionnaire';
+import { LE8_MENOPAUSIA_QUESTIONNAIRE } from './le8-menopausia';
+
+export { LE8_MENOPAUSIA_QUESTIONNAIRE };
 
 export const WELLNESS_QUESTIONNAIRE: Questionnaire = new QuestionnaireBuilder('wellness-checkin')
   .title('Daily Wellness Check-In')
@@ -83,6 +86,7 @@ export const WEEKLY_REFLECTION_QUESTIONNAIRE: Questionnaire = new QuestionnaireB
   .build();
 
 export const SAMPLE_QUESTIONNAIRES = [
+  LE8_MENOPAUSIA_QUESTIONNAIRE,
   WELLNESS_QUESTIONNAIRE,
   GRATITUDE_QUESTIONNAIRE,
   WEEKLY_REFLECTION_QUESTIONNAIRE,

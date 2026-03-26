@@ -8,6 +8,26 @@ export function createSampleTasks(): Omit<Task, 'createdAt'>[] {
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   return [
+    // ── EPA Bienestar — Evaluación Inicial LE8 (tarea prioritaria) ──────────
+    {
+      id: 'epa-evaluacion-inicial-le8',
+      title: 'Evaluación Inicial — Life\'s Essential 8',
+      instructions:
+        'Tu evaluación cardiovascular personalizada. ' +
+        'Tarda 5 minutos y es el primer paso para tu Plan Bienestar 100 Días®.',
+      category: 'questionnaire',
+      questionnaireId: 'le8-menopausia-v1',
+      schedule: {
+        startDate: today,
+        recurrence: {
+          type: 'once',
+          date: today,
+        },
+      },
+      completionPolicy: {
+        type: 'anytime',
+      },
+    },
     {
       id: 'morning-wellness',
       title: 'Morning Wellness Check',

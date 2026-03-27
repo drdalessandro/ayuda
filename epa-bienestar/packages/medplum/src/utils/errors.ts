@@ -77,13 +77,13 @@ export function mapMedplumError(error: unknown): AccountError {
       );
     }
 
-    // reCAPTCHA errors - direct users to disable it in Medplum settings
+    // reCAPTCHA errors
     if (message.includes('recaptcha') || message.includes('captcha')) {
       return new AccountError(
         AccountErrorCode.UNKNOWN_ERROR,
-        'Registration requires reCAPTCHA verification. ' +
-          'Please disable reCAPTCHA in your Medplum project settings ' +
-          '(Project Admin > Security > uncheck "Require reCAPTCHA").',
+        'El servidor requiere verificación reCAPTCHA. ' +
+          'Para habilitarlo en tu instancia Medplum: ' +
+          'Admin → Proyectos → Configuración → desmarcar "Require reCAPTCHA".',
         error
       );
     }

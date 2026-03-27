@@ -1,5 +1,6 @@
 import { MedplumClient, LoginAuthenticationResponse } from '@medplum/core';
 import type { Patient } from '@medplum/fhirtypes';
+import { Platform } from 'react-native';
 import type {
   AccountService,
   User,
@@ -13,6 +14,50 @@ import { createMedplumClient, getMedplumConfig } from '../client';
 import { patientToUser } from '../utils/fhir-mapping';
 import { mapMedplumError, notAuthenticatedError } from '../utils/errors';
 import type { MedplumConfig } from '../types';
+
+/**
+ * Obtiene un token reCAPTCHA v3 en el browser (web platform).
+ * Carga el script de Google si aún no está presente y ejecuta el challenge.
+ */
+async function getWebRecaptchaToken(siteKey: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const w = window as Record<string, unknown> & { grecaptcha?: { ready: (cb: () => void) => void; execute: (key: string, opts: { action: string }) => Promise<string> } };
+
+    function execute() {
+      w.grecaptcha!.ready(() => {
+        w.grecaptcha!
+          .execute(siteKey, { action: 'register' })
+          .then(resolve)
+          .catch(reject);
+      });
+    }
+
+    if (w.grecaptcha?.execute) {
+      execute();
+      return;
+    }
+
+    // Script not loaded yet — inject it
+    const existing = document.querySelector(`script[data-recaptcha="${siteKey}"]`);
+    if (existing) {
+      // Script already being loaded — poll until ready
+      const interval = setInterval(() => {
+        if (w.grecaptcha?.execute) {
+          clearInterval(interval);
+          execute();
+        }
+      }, 100);
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+    script.setAttribute('data-recaptcha', siteKey);
+    script.onload = execute;
+    script.onerror = () => reject(new Error('No se pudo cargar reCAPTCHA. Verificá tu conexión.'));
+    document.head.appendChild(script);
+  });
+}
 
 /**
  * Helper to get resource ID from a ProfileResource
@@ -129,6 +174,22 @@ export class MedplumAccountService implements AccountService {
   }
 
   /**
+   * Sign in using a Google OAuth access token.
+   * Requires Google to be configured as an external identity provider in Medplum:
+   * Admin → Project → Edit → Google Auth Client ID
+   */
+  async signInWithGoogle(accessToken: string): Promise<void> {
+    try {
+      await this.medplum.exchangeExternalAccessToken(accessToken);
+      this.currentUser = await this.fetchUserFromProfile();
+      this.notifyListeners();
+    } catch (error) {
+      this.logger.error('Google sign-in failed', error);
+      throw mapMedplumError(error);
+    }
+  }
+
+  /**
    * Register a new user account
    */
   async register(credentials: RegisterCredentials): Promise<void> {
@@ -139,6 +200,17 @@ export class MedplumAccountService implements AccountService {
           ? { givenName: credentials.name }
           : credentials.name;
 
+      // Resolve reCAPTCHA token:
+      //   1. Use pre-obtained token (from RecaptchaModal on native)
+      //   2. On web: auto-fetch via grecaptcha if RECAPTCHA_SITE_KEY is set
+      //   3. Otherwise: empty string (works when reCAPTCHA is disabled in Medplum)
+      const siteKey = process.env.EXPO_PUBLIC_RECAPTCHA_SITE_KEY || '';
+      let recaptchaToken = (credentials as { recaptchaToken?: string }).recaptchaToken || '';
+
+      if (!recaptchaToken && siteKey && Platform.OS === 'web') {
+        recaptchaToken = await getWebRecaptchaToken(siteKey);
+      }
+
       const newUserRequest = {
         email: credentials.email,
         password: credentials.password,
@@ -146,11 +218,8 @@ export class MedplumAccountService implements AccountService {
         lastName: personName?.familyName || '',
         projectId: this.config.projectId,
         clientId: this.config.clientId,
-        // Note: reCAPTCHA token is required by Medplum SDK.
-        // For projects not requiring reCAPTCHA, pass empty string.
-        // For production with reCAPTCHA enabled, implement reCAPTCHA v3
-        // and pass the token via credentials.recaptchaToken.
-        recaptchaToken: (credentials as { recaptchaToken?: string }).recaptchaToken || '',
+        recaptchaToken,
+        ...(siteKey ? { recaptchaSiteKey: siteKey } : {}),
       };
 
       const response = await this.medplum.startNewUser(newUserRequest);

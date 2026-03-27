@@ -33,6 +33,23 @@ module.exports = {
       "expo-router",
       "expo-secure-store",
       [
+        "expo-build-properties",
+        {
+          ios: {
+            // Required for Google Sign-In on iOS (reversed client ID)
+            infoPlist: {
+              CFBundleURLTypes: [
+                {
+                  CFBundleURLSchemes: [
+                    process.env.EXPO_PUBLIC_GOOGLE_IOS_REVERSED_CLIENT_ID || ""
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           image: "./assets/images/splash-icon.png",

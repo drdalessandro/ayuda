@@ -129,6 +129,22 @@ export class MedplumAccountService implements AccountService {
   }
 
   /**
+   * Sign in using a Google OAuth access token.
+   * Requires Google to be configured as an external identity provider in Medplum:
+   * Admin → Project → Edit → Google Auth Client ID
+   */
+  async signInWithGoogle(accessToken: string): Promise<void> {
+    try {
+      await this.medplum.exchangeExternalAccessToken(accessToken);
+      this.currentUser = await this.fetchUserFromProfile();
+      this.notifyListeners();
+    } catch (error) {
+      this.logger.error('Google sign-in failed', error);
+      throw mapMedplumError(error);
+    }
+  }
+
+  /**
    * Register a new user account
    */
   async register(credentials: RegisterCredentials): Promise<void> {
